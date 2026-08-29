@@ -53,3 +53,16 @@ out of anything you commit back.
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## A note on how this was built
+
+This is my first hardware project like this, and I leaned heavily on
+AI-assisted coding (Claude) for the firmware and scripting along the
+way. Every design decision, every test, and every bug hunt — right
+down to figuring out why custom fonts were rendering as white boxes
+— was done by hand, at my own pace, learning as I went.
+
+Consider this a functional starting point rather than a finished
+product. It works, end to end, but there's plenty of room to grow —
+more pages, more integrations, more polish. I'm looking forward to
+seeing where it goes from here.
