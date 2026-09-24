@@ -1,0 +1,18 @@
+PC Companion -- Start Here
+==========================
+
+Step 1: Unblock + install, in one paste.
+
+  A. Right-click + shift the pc_companion_installer folder
+  B. Choose Open in Terminal
+  C. Paste the below command in PowerShell and hit enter
+
+  Get-ChildItem -Recurse -File | Unblock-File; .\install_pc_companion.bat
+
+  That clears Windows' "downloaded from the internet" flag from every
+  file in this folder, then runs the installer right after -- all in
+  the same window, so you'll see install_pc_companion.bat's own
+  step-by-step output (and its "Install complete" message at the end)
+  right there to confirm it worked.
+
+  D. That's it! Next go to C:\pc_companion\docs\SETUP.md
