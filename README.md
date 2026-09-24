@@ -7,6 +7,8 @@ act as a USB trackpad, and (optionally) listen for a "Jarvis" wake
 word -- no cloud service, no companion app, just a keyboard and mouse
 your PC thinks are plugged in.
 
+![Hotkeys page](docs/images/hotkeys_page1.jpeg) ![Hotkeys page](docs/images/jarvis.jpeg)
+
 ## What it does
 
 - **Hotkeys / Hotkeys 2** -- touch buttons send real keyboard shortcuts
