@@ -1,74 +1,99 @@
-# Troubleshooting & Known Quirks
+# Troubleshooting
 
-Real issues hit while building this, kept here so you don't have to
-rediscover them.
+## Board hangs at `USB.begin()` during bring-up
 
-## Firmware / LVGL
+This is expected, not a bug -- **if** you're testing under
+**USB Mode: "Hardware CDC and JTAG"**. That mode has no USB HID
+support at the hardware/stack level, so `USB.begin()`/`Keyboard.begin()`
+can never complete under it, by design. Use it only as a temporary
+diagnostic view (it's the only mode combo that reliably shows Serial
+Monitor output during early boot). To actually run the device:
 
-- **`lv_conf.h` missing → `fatal error: ../../lv_conf.h`.** Every
-  LVGL demo example ships its own `lv_conf.h` next to the `.ino`.
-  Starting a fresh sketch doesn't carry it over automatically — copy
-  it in manually if you ever start a new sketch from scratch.
-- **Duplicate `.ino` files in one sketch folder.** Arduino IDE
-  compiles every `.ino` in a folder together as one program. If you
-  ever copy in an example sketch alongside your own, you'll get
-  "redefinition" errors for every function — only one `.ino` should
-  exist per folder.
-- **Landscape rotation is broken on this display driver.** Setting
-  the display rotation to landscape on the AXS15231B driver produces
-  a black screen — this matches an open, unresolved upstream bug,
-  not a mistake in this code. This firmware stays in native portrait.
-- **Custom fonts render as white boxes.** This board's LVGL build
-  only supports **1-bit (bpp=1)** custom fonts, not 4-bit
-  anti-aliased. If you regenerate `weather_icons_24.c` or
-  `calendar_icon_24.c` with the [LVGL font converter](https://lvgl.io/tools/fontconverter),
-  make sure bpp is set to 1.
-- **Media keys need a separate class.** `USBHIDKeyboard` does not
-  support media key constants (`KEY_MEDIA_PLAY_PAUSE` etc. don't
-  exist in that class). Media/consumer control keys require
-  `USBHIDConsumerControl` with its own `CONSUMER_CONTROL_*`
-  constants — both objects coexist fine in the same sketch.
+- **USB Mode:** USB-OTG (TinyUSB)
+- **Upload Mode:** USB-OTG CDC (TinyUSB)
 
-## Flashing
+You won't see Serial Monitor output in this mode (or it'll be limited)
+-- that's also expected, not a failure sign. The workflow: switch to
+Hardware CDC/UART0 to diagnose with visible logs, make your change,
+then switch both settings back to USB-OTG (TinyUSB) to verify it
+actually works on real hardware.
 
-- **TinyUSB mode breaks the normal auto-reset.** In "USB-OTG
-  (TinyUSB)" mode, Arduino IDE's usual auto-reset-into-bootloader
-  trick doesn't reliably work — use the manual BOOT-hold sequence in
-  [SETUP.md](SETUP.md) instead.
-- **Soft-reset after flashing is unreliable in this mode.** A
-  successful upload doesn't guarantee the chip restarts cleanly — do
-  a full physical unplug/replug rather than trusting the "Hard
-  resetting via RTS pin" message.
-- **COM port changes when USB Mode changes.** Windows treats each
-  USB Mode as a different device identity. This is expected — just
-  recheck **Tools → Port** each time.
-- **If the COM port doesn't show up at all after the BOOT-hold
-  sequence:** try selecting it manually and uploading anyway, or
-  just start the BOOT-hold sequence over from step 1.
-- **If none of the above works:** try fully unplugging the board
-  from power (not just re-running the BOOT sequence) and plugging
-  it back in.
-- **Sometimes the fix is simply trying again.** A handful of failed
-  uploads in a row, then a retry with no other changes, succeeding
-  is a real (if annoying) pattern with this board in this USB mode.
+## Board is bricked / won't take a new upload
 
-## Windows-side (AutoHotkey / shortcuts)
+1. Unplug the USB-C cable completely.
+2. Hold down the **BOOT** button on the board.
+3. While still holding BOOT, plug the USB-C cable back in.
+4. Keep holding BOOT for about 2 more seconds after plugging in.
+5. Release BOOT.
+6. In Arduino IDE, check Tools -> Port -- a COM port should now show
+   up (possibly a new number). Select it and Upload right away.
 
-- **Windows' native "Shortcut key" property only works from the
-  Desktop or Start Menu.** This is why this project uses AutoHotkey
-  instead — a `.lnk` file's hotkey binding silently stops working the
-  moment it's moved to any other folder.
-- **Hotkey conflicts are silent.** A Ctrl+Alt+letter combo may
-  already be claimed by other software (especially on a managed
-  work PC), with no warning. If a button doesn't fire, test the
-  exact combo from a real keyboard first.
-- **Closing all open windows reliably is harder than it looks.** A
-  naive "count open windows, then send Alt+F4 that many times"
-  approach is unreliable — window focus shifts unpredictably as
-  things close, and in the worst case it can land on the desktop and
-  trigger the Windows Shutdown dialog. `close_all.ps1` instead: (1)
-  quits all File Explorer windows via the Shell.Application COM
-  object, (2) sends `CloseMainWindow()` to every process with a
-  visible window (a graceful close request, not a force-kill), (3)
-  force-stops any lingering `powershell` process by name as a
-  catch-all.
+Notes: sometimes the COM port doesn't get picked up -- just start
+back at step 1. Sometimes unplugging power and plugging back in is
+what it actually needed. A few times, simply re-running the upload a
+second time was what made it take.
+
+## `partitions.csv` -- tried and abandoned
+
+An earlier debugging pass tried several custom partition tables to
+free up app space, suspecting the partition table was behind a boot
+hang. It wasn't -- see the USB Mode issue above, which was the real
+cause and is unrelated to partition content (confirmed via live
+on-device partition dumps). The final, working firmware uses the
+Arduino IDE's named **"ESP SR 16M (3MB APP/6MB SPIFFS/3.9MB MODEL)"**
+Partition Scheme instead of any custom `partitions.csv`, so no custom
+partition file ships in this repo.
+
+## WiFi telemetry (System page / Now Playing) not updating
+
+The original design sent CPU/RAM/GPU, Now Playing, and mute state
+over the same USB-CDC serial port used for keyboard/mouse HID. On this
+board, that path is unreliable: composite USB devices combining CDC
+and HID on ESP32-S3 hit an open upstream Arduino-ESP32 bug
+(espressif/arduino-esp32#10307) where the two interfaces stall each
+other's data. HID keeps working; serial RX to the board silently
+drops.
+
+Fix already applied in this firmware: telemetry rides WiFi/HTTP
+instead (the board runs a small web server on port 80). If it's still
+not updating, check:
+- `pc_companion_telemetry.py` is actually running (see
+  [SETUP.md](SETUP.md) for the auto-start installer).
+- The board and PC are on the same WiFi network.
+- The board's IP (shown on the Info page) hasn't changed since the
+  script last discovered it -- it re-discovers automatically via the
+  board's serial debug output, so restarting the script fixes a stale
+  IP.
+
+## Board won't join WiFi / no way to reach the web config page
+
+If the board never joined the WiFi network you expected, or you've
+moved it somewhere new, it's most likely sitting in its own setup
+hotspot rather than failing silently:
+
+- Look for a WiFi network named **`PC_Companion_Setup`** from your
+  phone or laptop. If you see it, connect to it and browse to
+  `http://192.168.4.1` -- that's the board's own setup page. Enter
+  your real SSID/password (and HA info, if you want) and submit; the
+  board saves it and reboots onto your network.
+- If you don't see that network and the board also isn't reachable at
+  its usual IP, give it a minute after power-on -- it only starts the
+  hotspot after a real connection attempt fails.
+- No WiFi at all where you are, and the board is already configured
+  for a different network? A short press of the physical **PWR**
+  button forces it back into `PC_Companion_Setup` mode regardless --
+  no network needed to trigger it. (This is a short press while the
+  board is already on -- a single click while it's fully off just
+  powers it on normally, and holding PWR for 6+ seconds still forces a
+  hardware shutdown as always.)
+- Once you know the board's IP again (shown on its Info page, or in
+  the Serial Monitor's `[NET] IP=...` line), `http://<board-ip>/` also
+  has a "Reconfigure WiFi" button and a "Home Assistant connection"
+  form for changing either without ever reflashing.
+
+## Reference material
+
+- [jarvis_boot_log_reference.txt](jarvis_boot_log_reference.txt) -- a
+  real serial-monitor capture of a normal, successful boot.
+- [jarvis_tools_settings.png](jarvis_tools_settings.png) -- a
+  screenshot of the known-working Arduino IDE Tools menu settings.

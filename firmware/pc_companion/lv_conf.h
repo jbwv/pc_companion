@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file lv_conf.h
  * Configuration file for v9.2.2
  */
@@ -681,7 +681,12 @@
 #if LV_USE_THEME_DEFAULT
 
     /*0: Light mode; 1: Dark mode*/
-    #define LV_THEME_DEFAULT_DARK 0
+    // Confirmed safe by bisection: the BOOT-screensaver crash was NOT the
+    // theme flip (a build with dark theme ON + all button/card local
+    // styling OFF ran clean). The actual trigger was the ~20 per-object
+    // local styles -- see style_hud_button()'s comment in pc_companion.ino
+    // for the fix (shared lv_style_t objects instead).
+    #define LV_THEME_DEFAULT_DARK 1
 
     /*1: Enable grow on press*/
     #define LV_THEME_DEFAULT_GROW 1

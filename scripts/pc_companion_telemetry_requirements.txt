@@ -1,0 +1,28 @@
+# pip install -r pc_companion_telemetry_requirements.txt
+#
+# Required for the script to run at all:
+psutil
+pyserial
+pyautogui
+requests
+
+# Required for the mute/unmute red-indicator state on the Media page:
+pycaw
+comtypes
+
+# Required for the Now Playing panel on the Media page (Spotify,
+# browser tabs, anything that registers with Windows' media controls):
+winrt-Windows.Media.Control
+winrt-Windows.Foundation
+winrt-Windows.Foundation.Collections
+
+# Optional: only used as a fallback if the primary GPU-Engine perfmon
+# counter isn't available on your system. NVIDIA cards only.
+nvidia-ml-py
+
+# NOTE: pyserial is still required -- the script keeps a serial
+# connection open to (a) watch for the board's "[NET] IP=..." line so
+# it knows where to send HTTP telemetry, and (b) show the board's debug
+# log in one place. It is no longer used to WRITE telemetry data
+# though -- that goes over WiFi/HTTP now (see pc_companion_telemetry.py
+# header comment for why).
