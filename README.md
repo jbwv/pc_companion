@@ -7,7 +7,12 @@ act as a USB trackpad, and (optionally) listen for a "Jarvis" wake
 word -- no cloud service, no companion app, just a keyboard and mouse
 your PC thinks are plugged in.
 
-![Hotkeys page](docs/images/hotkeys_page1.jpeg) ![Hotkeys page](docs/images/jarvis.jpeg)
+<table>
+<tr>
+<td><img src="docs/images/hotkeys_page1.jpeg" width="400"></td>
+<td><img src="docs/images/jarvis.jpeg" width="400"></td>
+</tr>
+</table>
 
 ## What it does
 
