@@ -5,7 +5,7 @@ Waveshare ESP32-S3-Touch-LCD-3.5B-C. Touch buttons launch apps and
 scripts, control media playback, show live system/weather/WiFi info,
 act as a USB trackpad, and (optionally) listen for a "Jarvis" wake
 word -- no cloud service, no companion app, just a keyboard and mouse
-your PC thinks are plugged in.
+your PC thinks are plugged in. Javis wake word & commands processed local on ESP32-S3.
 
 <table>
 <tr>
