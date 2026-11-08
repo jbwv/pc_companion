@@ -1,0 +1,50 @@
+[   437][V][USBHID.cpp:242] tud_hid_set_idle_cb(): instance: 0, orkManager.cpp:129] hostByName(): DNS found IPv4 188.40.99.226
+[ 13107][D][HTTPClient.cpp:1117] connect():  connected to api.open-meteo.com:80
+[ 13522][V][HTTPClient.cpp:1206] handleHeaderResponse(): RX: 'HTTP/1.1 200 OK'
+[ 13523][V][HTTPClient.cpp:1206] handleHeaderResponse(): RX: 'Date: Tue, 01 Sep 2026 00:41:03 GMT'
+[ 13525][V][HTTPClient.cpp:1206] handleHeaderResponse(): RX: 'Content-Type: application/json; charset=utf-8'
+[ 13526][V][HTTPClient.cpp:1206] handleHeaderResponse(): RX: 'Transfer-Encoding: chunked'
+[ 13531][V][HTTPClient.cpp:1206] handleHeaderResponse(): RX: 'Connection: keep-alive'
+[ 13532][V][HTTPClient.cpp:1206] handleHeaderResponse(): RX: ''
+[ 13532][D][HTTPClient.cpp:1259] handleHeaderResponse(): code: 200
+[ 13533][D][HTTPClient.cpp:1266] handleHeaderResponse(): Transfer-Encoding: chunked
+[ 13534][D][HTTPClient.cpp:618] sendRequest(): sendRequest code=200
+
+[ 13535][V][HTTPClient.cpp:902] writeToStream():  read chunk len: 476
+[ 13536][V][HTTPClient.cpp:1401] writeToStreamDataBlock(): connection closed or file end (written: 476).
+[ 13537][V][HTTPClient.cpp:902] writeToStream():  read chunk len: 0
+[ 13538][D][HTTPClient.cpp:370] disconnect(): still data in buffer (2), clean up.
+
+[ 13539][D][HTTPClient.cpp:375] disconnect(): tcp keep open for reuse
+[ 13541][D][HTTPClient.cpp:375] disconnect(): tcp keep open for reuse
+Setup done
+=========== After Setup Start ============
+INTERNAL Memory Info:
+------------------------------------------
+  Total Size        :   233832 B ( 228.4 KB)
+  Free Bytes        :    56092 B (  54.8 KB)
+  Allocated Bytes   :   162444 B ( 158.6 KB)
+  Minimum Free Bytes:    50740 B (  49.6 KB)
+  Largest Free Block:    31732 B (  31.0 KB)
+------------------------------------------
+SPIRAM Memory Info:
+------------------------------------------
+  Total Size        :  8388608 B (8192.0 KB)
+  Free Bytes        :  5006692 B (4889.3 KB)
+  Allocated Bytes   :  3374004 B (3294.9 KB)
+  Minimum Free Bytes:  5006500 B (4889.2 KB)
+  Largest Free Block:  4980724 B (4864.0 KB)
+------------------------------------------
+GPIO Info:
+------------------------------------------
+  GPIO : BUS_TYPE[bus/unit][chan]
+  --------------------------------------
+     6 : GPIO
+     7 : I2C_MASTER_SCL[0]
+     8 : I2C_MASTER_SDA[0]
+    12 : GPIO
+    13 : I2S_STD_BCLK
+    14 : I2S_STD_DIN
+    15 : I2S_STD_WS
+    44 : I2S_STD_MCLK
+============ After Setup End =============
