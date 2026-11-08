@@ -17,7 +17,7 @@
 ^!m::Run "C:\pc_companion\scripts\mithril.bat"
 ^!p::Run "powershell.exe"
 ^!n::Run "notepad.exe"
-^!i::Run "D:\toolbox_py\toolbox_py\toolbox.pyw"  ; NOT RELEASED -- see NOTE above
+^!i::Run "C:\toolbox_py\toolbox.pyw"  ; NOT RELEASED -- see NOTE above
 
 ; === PC Companion: auto-generated from board web config -- DO NOT EDIT BELOW ===
 ; This section is empty on a fresh install. Once you set a button's
