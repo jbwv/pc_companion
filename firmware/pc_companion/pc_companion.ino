@@ -182,7 +182,7 @@ HAButton liveHA[BTNS_PER_PAGE];
 const char* PAGE1_DEFAULT_ACTIONS[BTNS_PER_PAGE] = {
   "C:\\pc_companion\\scripts\\kairos.bat",   // Kairos
   "C:\\pc_companion\\scripts\\telos.bat",    // Telos
-  "D:\\toolbox_py\\toolbox_py\\toolbox.pyw", // Toolbox -- NOT INCLUDED, see NOTE above
+  "C:\\toolbox_py\\toolbox.pyw",              // Toolbox -- NOT INCLUDED, see NOTE above
   "C:\\pc_companion\\scripts\\mithril.bat",  // Mithril -- NOT INCLUDED, see NOTE above
   "",                                        // Snip
   "powershell.exe",                          // PowerShell
